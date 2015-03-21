@@ -1,26 +1,32 @@
 package com.slusarzparadowski.homebudget;
 
-import java.util.Locale;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import com.slusarzparadowski.token.Token;
+import com.slusarzparadowski.database.Database;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+    ProgressDialog pDialog;
+    Token token;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -40,6 +46,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        token = new Token(getApplicationContext());
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -74,8 +82,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-    }
 
+        new CheckToken().execute();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -183,6 +192,50 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
+    }
+
+    class CheckToken extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Checking token..");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+        }
+
+        protected String doInBackground(String... args) {
+            try {
+                if(!token.loadToken()){
+                    while(true){
+                        token.createToken();
+                        if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
+                            token.saveToken();
+                            if(Database.insertToken(token.getToken()).equals("")){
+                                Log.e("Error ", "Token insert error");
+                            }
+                            Log.d("Token created", token.getToken());
+                            return "Token created " + token.getToken();
+                        }
+                    }
+                }
+                Log.d("Token loaded", token.getToken());
+                return "Token loaded " + token.getToken();
+            } catch (IOException e) {
+                Log.e("IOException", e.getMessage());
+                return "IOException " + e.getMessage();
+            }
+
+        }
+
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog once done
+            pDialog.dismiss();
+        }
+
     }
 
 }
