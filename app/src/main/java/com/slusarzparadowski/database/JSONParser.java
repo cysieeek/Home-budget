@@ -41,7 +41,7 @@ public class JSONParser {
         // Making HTTP request
         try {
             // check for request method
-            if(method == "POST"){
+            if(method.equals("POST")){
                 // request method is POST
                 // defaultHttpClient
                 DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -52,7 +52,7 @@ public class JSONParser {
                 HttpEntity httpEntity = httpResponse.getEntity();
                 is = httpEntity.getContent();
 
-            }else if(method == "GET"){
+            }else if(method.equals("GET")){
                 // request method is GET
                 DefaultHttpClient httpClient = new DefaultHttpClient();
                 String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -65,10 +65,13 @@ public class JSONParser {
             }
 
         } catch (UnsupportedEncodingException e) {
+            Log.e("JSONParser:mHR", e.toString());
             e.printStackTrace();
         } catch (ClientProtocolException e) {
+            Log.e("JSONParser:mHR", e.toString());
             e.printStackTrace();
         } catch (IOException e) {
+            Log.e("JSONParser:mHR", e.toString());
             e.printStackTrace();
         }
 

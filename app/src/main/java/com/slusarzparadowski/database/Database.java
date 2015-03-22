@@ -38,25 +38,15 @@ public class Database {
         try {
             int value = json.getInt(TAG_VALUE);
             String message = json.getString(TAG_MESSAGE);
-            if (value == 1) {
-                Log.d(String.valueOf(value), message);
-                return message;
-            }
-            else if(value == 0){
-                Log.e(String.valueOf(value), message);
-                return message;
-            }
-            else {
-                Log.d(String.valueOf(value), message);
-                return message;
-            }
+            Log.d(String.valueOf(value), message);
+            return message;
         } catch (JSONException e) {
-            Log.e("JSONException", e.getMessage());
+            Log.e("Database:checkToken", e.toString());
             return "JSONException";
         }
     }
 
-    static public String insertToken(String token){
+    static public boolean insertToken(String token){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("insert_token", token));
 
@@ -71,16 +61,11 @@ public class Database {
         try {
             int value = json.getInt(TAG_VALUE);
             String message = json.getString(TAG_MESSAGE);
-            if (value == 1) {
-                Log.d(String.valueOf(value), message);
-                return message;
-            } else {
-                Log.e(String.valueOf(value), message);
-                return message;
-            }
+            Log.d(String.valueOf(value), message);
+            return true;
         } catch (JSONException e) {
-            Log.e("JSONException", e.getMessage());
-            return "JSONException";
+            Log.e("Database:insertToken", e.toString());
+            return false;
         }
     }
 }

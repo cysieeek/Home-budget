@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Vector;
 
 import com.slusarzparadowski.token.Token;
 import com.slusarzparadowski.database.Database;
@@ -199,9 +200,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Checking token..");
+            pDialog.setMessage("Checking token...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
@@ -214,25 +214,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         token.createToken();
                         if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
                             token.saveToken();
-                            if(Database.insertToken(token.getToken()).equals("")){
-                                Log.e("Error ", "Token insert error");
+                            if(Database.insertToken(token.getToken())){
+                                return null;
                             }
-                            Log.d("Token created", token.getToken());
-                            return "Token created " + token.getToken();
                         }
                     }
                 }
-                Log.d("Token loaded", token.getToken());
-                return "Token loaded " + token.getToken();
             } catch (IOException e) {
-                Log.e("IOException", e.getMessage());
-                return "IOException " + e.getMessage();
+                Log.e("CheckToken:dIB", e.toString());
             }
-
+            return null;
         }
 
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog once done
             pDialog.dismiss();
         }
 

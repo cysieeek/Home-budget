@@ -26,12 +26,14 @@ public class Token {
 
     public void createToken() throws IOException {
         this.token = Long.toHexString(Double.doubleToLongBits(Math.random())) + Long.toHexString(Double.doubleToLongBits(Math.random()));
+        Log.d("Token:createToken", "Token  "+ this.token + " created");
     }
 
     public void saveToken() throws IOException {
         FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
         fos.write(this.token.getBytes());
         fos.close();
+        Log.d("Token:saveToken", "Token  "+ this.token + " saved");
     }
 
     public boolean loadToken() throws IOException {
@@ -44,9 +46,10 @@ public class Token {
             }
             this.token = temp;
             fin.close();
+            Log.d("Token:loadToken", "Token "+ this.token +" load from "+ FILENAME);
             return true;
         }catch(FileNotFoundException e){
-            Log.e("FileNotFoundException", e.getMessage());
+            Log.e("Token:loadToken", e.toString());
             return false;
         }
     }
