@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Vector;
 
+import com.slusarzparadowski.placeholder.PlaceholderIncome;
+import com.slusarzparadowski.placeholder.PlaceholderSummary;
 import com.slusarzparadowski.token.Token;
 import com.slusarzparadowski.database.Database;
 
@@ -138,7 +140,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+
+            if(position == 0)
+                return PlaceholderIncome.newInstance(position + 1);
+            if(position == 1)
+                return PlaceholderSummary.newInstance(position + 1);
+            if(position == 2)
+                return PlaceholderIncome.newInstance(position + 1);
+            return null;
         }
 
         @Override
@@ -162,39 +171,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
-
     class CheckToken extends AsyncTask<String, String, String> {
 
         @Override
@@ -215,10 +191,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                         if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
                             token.saveToken();
                             if(Database.insertToken(token.getToken())){
-                                return null;
+                                break;
                             }
                         }
                     }
+                }
+                if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
+                    Database.insertToken(token.getToken());
                 }
             } catch (IOException e) {
                 Log.e("CheckToken:dIB", e.toString());

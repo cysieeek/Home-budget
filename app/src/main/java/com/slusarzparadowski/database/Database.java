@@ -19,6 +19,7 @@ public class Database {
 
     private static String urlInsert = "http://slusarzparadowskiprojekt.esy.es/insert.php";
     private static String urlCheck = "http://slusarzparadowskiprojekt.esy.es/check.php";
+    private static String urlGet = "http://slusarzparadowskiprojekt.esy.es/get.php";
 
     static JSONParser jsonParser = new JSONParser();
 
@@ -68,4 +69,52 @@ public class Database {
             return false;
         }
     }
+
+    static public boolean getSummary(String token){
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("get_summary", token));
+
+        // getting JSON Object
+        // Note that create product url accepts POST method
+        JSONObject json = jsonParser.makeHttpRequest(urlGet, "POST", params);
+
+        // check log cat fro response
+        Log.d("Create Response", json.toString());
+
+        // check for success tag
+        try {
+            int value = json.getInt(TAG_VALUE);
+            String message = json.getString(TAG_MESSAGE);
+            Log.d(String.valueOf(value), message);
+            return true;
+        } catch (JSONException e) {
+            Log.e("Database:insertToken", e.toString());
+            return false;
+        }
+
+    }
+
+    static public void getElement(String token){
+
+
+        /*
+        select * from user
+        join element on element.id_user = user.id
+        join element_detail on element_detail.id_element = element.id;
+        * */
+
+        /*
+        CREATE OR REPLACE VIEW summary as
+        select user.id,
+        (select sum(element_detail.value) from element_detail
+        join element on element.id = element_detail.id_element where element.type = "income") as income,
+        (select sum(element_detail.value) from element_detail
+        join element on element.id = element_detail.id_element where element.type = "outcome") as outcome,
+        ((select sum(element_detail.value) from element_detail
+        join element on element.id = element_detail.id_element where element.type = "income") - (select sum(element_detail.value) from element_detail
+        join element on element.id = element_detail.id_element where element.type = "outcome")) as summary
+        from user;
+        * */
+    }
+
 }
