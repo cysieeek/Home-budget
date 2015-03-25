@@ -1,6 +1,7 @@
 package com.slusarzparadowski.homebudget;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -105,6 +106,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.putExtra("tokenString", token.getToken().toString());
+            startActivity(intent);
             return true;
         }
 

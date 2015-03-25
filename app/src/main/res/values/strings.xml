@@ -1,13 +1,20 @@
 <resources>
+    <!-- main activity -->
     <string name="app_name">HomeBudget</string>
+    <string name="action_settings">Settings</string>
 
-
+    <!-- taped manu -->
     <string name="title_section1">Outcome</string>
     <string name="title_section2">Summary</string>
     <string name="title_section3">Income</string>
 
     <string name="hello_world">Hello world!</string>
 
-    <string name="action_settings">Settings</string>
+    <!-- settings activity -->
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="token_settings">Token:</string>
+    <string name="token_value_settings">Token value</string>
+    <string name="version_settings">Version</string>
+    <string name="version_value_settings">1.1</string>
 
 </resources>

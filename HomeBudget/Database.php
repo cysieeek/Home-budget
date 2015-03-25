@@ -19,7 +19,7 @@ class Mysql{
         $this->link->set_charset("utf8");
     }
     
-    private function getError(){
+    public function getError(){
         return mysqli_error($this->link);
     }
     
@@ -39,8 +39,9 @@ class Mysql{
         $this->clear($token);
         $query = "insert into user (id) values ('". $token ."');";
         if(mysqli_query($this->link, $query)){
-           return true;
-        }else{
+            return true;
+        }
+        else{
             return $this->getError();
         }
     }
@@ -141,6 +142,7 @@ class Mysql{
         }
     }
       
+    
     /*
      * return value mysqli_result object or string
      * if query successed
@@ -149,16 +151,15 @@ class Mysql{
      * if query failed
      * a string that describes the error
      */
-    public function getSummary($token){
+    public function getElement($token , $type){
         $this->clear($token);
-        $query = "select * from summary where id like '". $token ."';";
-        $result = mysqli_query($this->link, $query);
-        if($result === false){
-           return $this->getError();
-        }
-        else{
-           return $result;
-        }
+        $this->clear($type);
+        $query = 'select element_detail.* from element_detail '
+                . 'join element on element.id = element_detail.id_element '
+                . 'join user on user.id = element.id_user '
+                . 'where element.type like "'.$type.'" and '
+                . 'user.id like "'. $token .'";';
+        return mysqli_query($this->link, $query);
     }
     
     /*
@@ -169,36 +170,15 @@ class Mysql{
      * if query failed
      * a string that describes the error
      */
-    public function getElement($token){
+    public function getElementDetail($token, $id){
         $this->clear($token);
-        $query = "select element.* from element join user on user.id = elemetn.id_user where user.id = '". $token ."';";
-        if($result = mysqli_query($this->link, $query)){
-           return $result;
-        }
-        else{
-            return $this->getError();
-        }
-    }
-    
-    /*
-     * return value mysqli_result object or string
-     * if query successed
-     * mysqli_result object
-     * -----------
-     * if query failed
-     * a string that describes the error
-     */
-    public function getElementDetail($token){
-        $this->clear($token);
-        $query = "select element_detail.* from element_detail "
-                . "join element on element.id = element_detail.id_element "
-                . "join user on user.id = elemetn.id_user "
-                . "where user.id = '". $token ."';";
-        if($result = mysqli_query($this->link, $query)){
-           return $result;
-        }else{
-            return $this->getError();
-        }
+        $this->clear($type);
+        $query = 'select element_detail.* from element_detail '
+                . 'join element on element.id = element_detail.id_element '
+                . 'join user on user.id = element.id_user '
+                . 'where element.id like "'.$id.'" and '
+                . 'user.id like "'. $token .'";';
+        return mysqli_query($this->link, $query);
     }
     
     /*
