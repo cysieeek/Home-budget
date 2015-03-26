@@ -22,8 +22,25 @@ echo  '<form action="get.php" method="post">
         </form> ';
 
 echo  '<form action="get.php" method="post">
-        get element_detaul:<br>
+        get element_detail:<br>
         <input type="text" name="get_element_detail" placeholder="token">
         <input type="text" name="get_element_id" placeholder="id">
+        <input type="submit" value="Submit">
+        </form> ';
+
+echo  '<form action="update.php" method="post">
+        update element:<br>
+        <input type="text" name="update_element" placeholder="token">
+        <input type="text" name="update_element_id" placeholder="id">
+        <input type="text" name="update_element_name" placeholder="name">
+        <input type="submit" value="Submit">
+        </form> ';
+
+echo  '<form action="update.php" method="post">
+        update element_detail:<br>
+        <input type="text" name="update_element_detail" placeholder="token">
+        <input type="text" name="update_element_detail_id" placeholder="id">
+        <input type="text" name="update_element_detail_name" placeholder="name">
+        <input type="text" name="update_element_detail_value" placeholder="value">
         <input type="submit" value="Submit">
         </form> ';
