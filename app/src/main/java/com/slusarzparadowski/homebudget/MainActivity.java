@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Vector;
 
+import com.slusarzparadowski.model.Model;
 import com.slusarzparadowski.placeholder.PlaceholderIncome;
 import com.slusarzparadowski.placeholder.PlaceholderSummary;
 import com.slusarzparadowski.token.Token;
@@ -30,7 +31,7 @@ import com.slusarzparadowski.database.Database;
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     ProgressDialog pDialog;
-    Token token;
+    Model model;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -51,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        token = new Token(getApplicationContext());
+        model = new Model(getApplicationContext());
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            intent.putExtra("tokenString", token.getToken().toString());
+            intent.putExtra("tokenString", model.getToken().getToken().toString());
             startActivity(intent);
             return true;
         }
@@ -189,20 +190,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         protected String doInBackground(String... args) {
             try {
-                if(!token.loadToken()){
+                if(!model.getToken().loadToken()){
                     while(true){
-                        token.createToken();
-                        if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
-                            token.saveToken();
-                            if(Database.insertToken(token.getToken())){
+                        model.getToken().createToken();
+                        if(Database.checkToken(model.getToken().getToken()).equals("NOT_EXIST")){
+                            model.getToken().saveToken();
+                            if(Database.insertToken(model.getToken().getToken())){
                                 break;
                             }
                         }
                     }
                 }
-                if(Database.checkToken(token.getToken()).equals("NOT_EXIST")){
-                    Database.insertToken(token.getToken());
+                if(Database.checkToken(model.getToken().getToken()).equals("NOT_EXIST")){
+                    Database.insertToken(model.getToken().getToken());
                 }
+
+                model.loadIncome();
+                model.loadOutcome();
             } catch (IOException e) {
                 Log.e("CheckToken:dIB", e.toString());
             }

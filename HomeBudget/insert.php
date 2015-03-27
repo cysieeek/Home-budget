@@ -39,10 +39,10 @@ if(isset($_POST['insert_token'])){
  * valuse = 1
  * message = ELEMENT_ADDED
  */
-if(isset($_POST['insert_element']) && isset($_POST['token']) && isset($_POST['name']) && isset($_POST['type'])){
+if(isset($_POST['insert_element']) && isset($_POST['insert_element_name']) && isset($_POST['insert_element_type'])){
     $response = array();
     $mysql->connect();
-    if($result = $mysql->insertElement($_POST['token'], $_POST['name'], $_POST['type'])){
+    if($result = $mysql->insertElement($_POST['insert_element'], $_POST['insert_element_name'], $_POST['insert_element_type'])){
         $response['response_value'] = 1;
         $response['response_message'] = "ELEMENT_ADDED";
     }
@@ -62,10 +62,10 @@ if(isset($_POST['insert_element']) && isset($_POST['token']) && isset($_POST['na
  * valuse = 1
  * message = ELEMENT_ADDED
  */
-if(isset($_POST['insert_element_detail']) && isset($_POST['token']) && isset($_POST['name']) && isset($_POST['value'])){
+if(isset($_POST['insert_element_detail']) && isset($_POST['insert_element_detail_id_element']) && isset($_POST['insert_element_detail_name']) && isset($_POST['insert_element_detail_value'])){
     $response = array();
     $mysql->connect();
-    if($result = $mysql->insertElement($_POST['token'], $_POST['name'], $_POST['value'])){
+    if($result = $mysql->insertElementDetail($_POST['insert_element_detail_id_element'], $_POST['insert_element_detail_name'], $_POST['insert_element_detail_value'])){
         $response['response_value'] = 1;
         $response['response_message'] = "ELEMENT_DETAIL_ADDED";
     }

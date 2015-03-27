@@ -186,7 +186,6 @@ class Mysql{
         }
     }
     
-    
     /*
      * return value mysqli_result object or string
      * if query successed
@@ -196,13 +195,10 @@ class Mysql{
      * a string that describes the error
      */
     public function getElement($token, $type){
-        $this->clear($token);
-        $this->clear($type);
-        $query = 'select element_detail.* from element_detail '
-                . 'join element on element.id = element_detail.id_element '
+        $query = 'select element.* from element '
                 . 'join user on user.id = element.id_user '
-                . 'where element.type like "'.$type.'" and '
-                . 'user.id like "'. $token .'";';
+                . 'where element.type like "'.$this->clear($type).'" and '
+                . 'user.id like "'. $this->clear($token) .'";';
         return mysqli_query($this->link, $query);
     }
     
@@ -215,13 +211,11 @@ class Mysql{
      * a string that describes the error
      */
     public function getElementDetail($token, $id){
-        $this->clear($token);
-        $this->clear($id);
         $query = 'select element_detail.* from element_detail '
                 . 'join element on element.id = element_detail.id_element '
                 . 'join user on user.id = element.id_user '
-                . 'where element.id like "'.$id.'" and '
-                . 'user.id like "'. $token .'";';
+                . 'where element.id like "'.$this->clear($id).'" and '
+                . 'user.id like "'.  $this->clear($token) .'";';
         return mysqli_query($this->link, $query);
     }
     

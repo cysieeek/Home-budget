@@ -13,10 +13,6 @@ public class Element {
 
     public Element(int id){
         this.id = id;
-        Object[] temp;
-        temp = Database.getElement(this.id);
-        this.name = (String)temp[0];
-        this.value = (int)temp[1];
     }
 
     public Element(int id, String name, double value){

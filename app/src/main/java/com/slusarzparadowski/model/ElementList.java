@@ -2,6 +2,7 @@ package com.slusarzparadowski.model;
 
 import com.slusarzparadowski.database.Database;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,29 +10,27 @@ import java.util.List;
  */
 public class ElementList {
 
-    private List<Element> elementList;
+    private ArrayList<Element> elementList;
     private int id;
     private String name;
     private String type;
 
     public ElementList(int id){
         this.id = id;
-        Database.getElementList(this.id);
-
     }
 
     public ElementList(int id, String name, String type){
         this.id = id;
         this.name = name;
         this.type = type;
-
+        this.elementList = new ArrayList<Element>();
     }
 
-    public List<Element> getElementList() {
+    public ArrayList<Element> getElementList() {
         return elementList;
     }
 
-    public void setElementList(List<Element> elementList) {
+    public void setElementList(ArrayList<Element> elementList) {
         this.elementList = elementList;
     }
 
