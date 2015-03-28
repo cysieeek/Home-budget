@@ -1,7 +1,7 @@
 package com.slusarzparadowski.placeholder;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import com.slusarzparadowski.homebudget.R;
 
 /**
- * Created by Dominik on 2015-03-22.
+ * Created by Dominik on 2015-03-27.
  */
-public class PlaceholderIncome extends Fragment {
+public class PlaceholderOutcome extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
@@ -31,13 +31,13 @@ public class PlaceholderIncome extends Fragment {
         return fragment;
     }
 
-    public PlaceholderIncome() {
+    public PlaceholderOutcome() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_income, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_outcome, container, false);
         return rootView;
     }
 }

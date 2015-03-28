@@ -21,9 +21,11 @@ import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import com.slusarzparadowski.model.Model;
 import com.slusarzparadowski.placeholder.PlaceholderIncome;
+import com.slusarzparadowski.placeholder.PlaceholderOutcome;
 import com.slusarzparadowski.placeholder.PlaceholderSummary;
 import com.slusarzparadowski.token.Token;
 import com.slusarzparadowski.database.Database;
@@ -51,8 +53,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        model = new Model(getApplicationContext());
+        String result = "";
+        try {
+            result = new CheckToken().execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        while(true){
+            if(result.equals("DONE"))
+                break;
+        }
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -88,7 +100,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 
-        new CheckToken().execute();
     }
 
     @Override
@@ -145,14 +156,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-
-            if(position == 0)
-                return PlaceholderIncome.newInstance(position + 1);
-            if(position == 1)
-                return PlaceholderSummary.newInstance(position + 1);
-            if(position == 2)
-                return PlaceholderIncome.newInstance(position + 1);
-            return null;
+            switch(position){
+                case 0:
+                    return PlaceholderIncome.newInstance(position + 1);
+                case 1:
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("income", model.getIncomeSum());
+                    bundle.putDouble("outcome", model.getOutcomeSum());
+                    PlaceholderSummary placeholderSummary = PlaceholderSummary.newInstance(position + 1);
+                    placeholderSummary.setArguments(bundle);
+                    return placeholderSummary;
+                case 2:
+                    return PlaceholderOutcome.newInstance(position + 1);
+                default:
+                    return null;
+            }
         }
 
         @Override
@@ -182,7 +200,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Checking token...");
+            pDialog.setMessage("Loading data...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
@@ -190,27 +208,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         protected String doInBackground(String... args) {
             try {
-                if(!model.getToken().loadToken()){
-                    while(true){
-                        model.getToken().createToken();
-                        if(Database.checkToken(model.getToken().getToken()).equals("NOT_EXIST")){
-                            model.getToken().saveToken();
-                            if(Database.insertToken(model.getToken().getToken())){
-                                break;
-                            }
-                        }
-                    }
-                }
-                if(Database.checkToken(model.getToken().getToken()).equals("NOT_EXIST")){
-                    Database.insertToken(model.getToken().getToken());
-                }
-
-                model.loadIncome();
-                model.loadOutcome();
+                model = new Model(getApplicationContext());
             } catch (IOException e) {
-                Log.e("CheckToken:dIB", e.toString());
+                e.printStackTrace();
             }
-            return null;
+            return "DONE";
         }
 
         protected void onPostExecute(String file_url) {

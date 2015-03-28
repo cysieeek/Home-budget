@@ -3,7 +3,7 @@
     <string name="app_name">HomeBudget</string>
     <string name="action_settings">Settings</string>
 
-    <!-- taped manu -->
+    <!-- tapped manu -->
     <string name="title_section1">Outcome</string>
     <string name="title_section2">Summary</string>
     <string name="title_section3">Income</string>
@@ -15,6 +15,6 @@
     <string name="token_settings">Token:</string>
     <string name="token_value_settings">Token value</string>
     <string name="version_settings">Version</string>
-    <string name="version_value_settings">1.1</string>
+    <string name="version_value_settings">1.2</string>
 
 </resources>

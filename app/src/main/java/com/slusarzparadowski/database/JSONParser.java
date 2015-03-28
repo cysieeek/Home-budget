@@ -31,9 +31,7 @@ public class JSONParser {
     static String json = "";
 
     // constructor
-    public JSONParser() {
-
-    }
+    public JSONParser() {}
 
     // function get json from url
     // by making HTTP POST or GET mehtod

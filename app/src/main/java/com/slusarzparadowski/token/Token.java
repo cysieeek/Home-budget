@@ -2,6 +2,9 @@ package com.slusarzparadowski.token;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.slusarzparadowski.database.Database;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,23 +23,37 @@ public class Token {
         return this.token;
     }
 
-    public Token(Context context){
+    public Token(Context context) throws IOException {
         this.context = context;
+        if(!this.loadToken()){
+            while(true){
+                this.createToken();
+                if(Database.checkToken(this.token).equals("NOT_EXIST")){
+                    this.saveToken();
+                    if(Database.insertToken(this.token)){
+                        break;
+                    }
+                }
+            }
+        }
+        if(Database.checkToken(this.token).equals("NOT_EXIST")){
+            Database.insertToken(this.token);
+        }
     }
 
-    public void createToken() throws IOException {
+    private void createToken() throws IOException {
         this.token = Long.toHexString(Double.doubleToLongBits(Math.random())) + Long.toHexString(Double.doubleToLongBits(Math.random()));
         Log.d("Token:createToken", "Token  "+ this.token + " created");
     }
 
-    public void saveToken() throws IOException {
+    private void saveToken() throws IOException {
         FileOutputStream fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
         fos.write(this.token.getBytes());
         fos.close();
         Log.d("Token:saveToken", "Token  "+ this.token + " saved");
     }
 
-    public boolean loadToken() throws IOException {
+    private boolean loadToken() throws IOException {
         try {
             FileInputStream fin = context.openFileInput(FILENAME);
             int c;

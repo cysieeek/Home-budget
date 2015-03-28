@@ -6,6 +6,7 @@ import android.content.Context;
 import com.slusarzparadowski.database.Database;
 import com.slusarzparadowski.token.Token;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -17,10 +18,34 @@ public class Model {
     private ArrayList<ElementList> income;
     private ArrayList<ElementList> outcome;
 
-    public Model(Context context) {
+    public Model(Context context) throws IOException {
         this.token = new Token(context);
-        // pobierz wszystkie element o tokenie i typei income
-        //dla każdego elementu w liscie pobierz wszystkie element_detail o id tokenie
+        this.loadOutcome();
+        this.loadIncome();
+    }
+
+    public double getSummary(){
+        return this.getIncomeSum() - this.getOutcomeSum();
+    }
+
+    public double getIncomeSum(){
+        double sum = 0;
+        for(ElementList el : this.income){
+            for(Element e : el.getElementList()){
+                sum += e.getValue();
+            }
+        }
+        return sum;
+    }
+
+    public double getOutcomeSum(){
+        double sum = 0;
+        for(ElementList el : this.outcome){
+            for(Element e : el.getElementList()){
+                sum += e.getValue();
+            }
+        }
+        return sum;
     }
 
     public void loadIncome(){
@@ -28,7 +53,7 @@ public class Model {
     }
 
     public void loadOutcome(){
-        this.setIncome(Database.getList(token.getToken(), "outcome"));
+        this.setOutcome(Database.getList(token.getToken(), "outcome"));
     }
 
     public Token getToken(){
